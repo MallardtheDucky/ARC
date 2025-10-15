@@ -23,11 +23,13 @@
         /* Custom styles to enhance the Star Wars corporate theme */
         :root {
             --arc-purple: #8b5cf6;
+            --arc-gold: #fde047; /* Yellow-300 for a modern gold feel */
             --arc-deep-space: #0c0c14;
             --arc-metal: #111827;
             --arc-light-gray: #d1d5db;
             --arc-border-light: #374151;
-            --arc-glow: rgba(139, 92, 246, 0.5);
+            --arc-glow: rgba(139, 92, 246, 0.4);
+            --arc-gold-glow: rgba(253, 224, 71, 0.4);
         }
 
         html { scroll-behavior: smooth; }
@@ -41,15 +43,23 @@
 
         h1, h2, h3, h4, .font-orbitron {
             font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 8px var(--arc-glow);
+            text-shadow: 0 0 5px var(--arc-glow);
         }
 
         .text-arc-purple { color: var(--arc-purple); }
+        .text-arc-gold { color: var(--arc-gold); }
         .bg-arc-purple { background-color: var(--arc-purple); }
         .border-arc-purple { border-color: var(--arc-purple); }
         .bg-arc-metal { background-color: var(--arc-metal); }
         .border-arc-light { border-color: var(--arc-border-light); }
         
+        .text-gold-gradient {
+            background: linear-gradient(45deg, var(--arc-gold), #fef08a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px var(--arc-gold-glow);
+        }
+
         /* Navigation styling */
         .nav-link {
             transition: all 0.3s ease; position: relative; padding-bottom: 8px; color: var(--arc-light-gray);
@@ -97,8 +107,8 @@
         }
         .glass-card:hover {
             transform: translateY(-5px) scale(1.02);
-            border-color: rgba(139, 92, 246, 0.5); 
-            box-shadow: 0 0 25px rgba(139, 92, 246, 0.25);
+            border-color: var(--arc-purple); 
+            box-shadow: 0 0 25px var(--arc-glow), 0 0 10px var(--arc-glow) inset;
         }
         
         /* Page styles */
@@ -188,13 +198,51 @@
         #back-to-top:hover {
             opacity: 1;
             transform: scale(1.1);
+            box-shadow: 0 0 15px var(--arc-glow);
         }
         /* Service Tabs */
         .service-tab { cursor: pointer; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
         .service-tab:hover { color: white; border-bottom-color: var(--arc-purple); }
         .service-tab.active-tab { color: var(--arc-purple); border-bottom-color: var(--arc-purple); font-weight: bold; }
         .service-content { display: none; animation: fadeIn 0.5s; }
-        .service-content.active-content { display: grid; }
+        .service-content.active-content { display: block; }
+        
+        /* Vault Diagram */
+        .vault-layer {
+            background-color: rgba(139, 92, 246, 0.05);
+            border: 2px solid var(--arc-border-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .vault-layer:hover, .vault-layer.active-layer {
+            background-color: rgba(139, 92, 246, 0.2);
+            border-color: var(--arc-purple);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--arc-glow);
+        }
+        
+        /* Interactive Timeline */
+        .timeline-dot {
+            position: absolute; left: 0; top: 5px; height: 1.25rem; width: 1.25rem; 
+            background-color: var(--arc-metal); border: 3px solid var(--arc-purple); 
+            border-radius: 50%;
+        }
+        .timeline-item::before {
+            content: ''; position: absolute; left: 9px; top: 1.25rem; bottom: -1.25rem;
+            width: 3px; background-color: var(--arc-border-light);
+        }
+        .timeline-item:last-child::before { display: none; }
+        .timeline-details {
+            max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out;
+        }
+        .timeline-content {
+            border-left: 3px solid transparent; transition: border-color 0.3s ease;
+        }
+        .timeline-content:hover {
+            border-color: var(--arc-purple);
+        }
+
     </style>
 </head>
 <body class="bg-arc-deep-space">
@@ -231,7 +279,7 @@
                  <!-- Mobile/Tablet Navigation Button -->
                 <div class="lg:hidden">
                     <button id="mobile-menu-button" class="text-white p-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset ring-arc-purple">
-                        <svg class="h-6 w-6" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
                     </button>
                 </div>
             </div>
@@ -272,9 +320,12 @@
 
     <!-- Footer -->
     <footer class="bg-arc-metal border-t border-arc-light mt-12">
-        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400 text-sm">
-            <p>&copy; Auric Reserve Consortium. Founded Circa 18,200 BBY.</p>
-            <p class="mt-2">A Private Chartered Financial Institution headquartered on Aargau. All rights reserved.</p>
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+            <img src="images/LOgo (1).png" alt="ARC Logo" class="h-16 w-16 mx-auto mb-4 opacity-50">
+            <p class="font-orbitron text-lg text-white">AURIC RESERVE CONSORTIUM</p>
+            <p class="mt-2 text-sm">A Private Chartered Financial Institution headquartered on Aargau.</p>
+            <hr class="my-6 border-arc-light w-1/4 mx-auto">
+            <p class="text-xs">&copy; Founded Circa 18,200 BBY. All rights reserved.</p>
             <p class="mt-4 text-xs text-gray-500">Unauthorized access or transaction attempts are logged and prosecuted to the fullest extent of Republic law.</p>
         </div>
     </footer>
@@ -291,16 +342,16 @@
         const pageContent = {
             home: `
                 <div id="hero-section" class="relative rounded-lg overflow-hidden min-h-[70vh] flex items-center justify-center text-center p-8">
-                    <div id="hero-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-300 ease-out" style="background-image: url('images/554830305_24433306486310728_1080202522830542100_n.jpg');"></div>
+                    <div id="hero-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-300 ease-out" style="background-image: url('images/Coruscant_at_night.webp');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-arc-deep-space via-arc-deep-space/50 to-transparent"></div>
                     <div id="hero-content" class="relative z-10 animate-on-scroll transition-transform duration-300 ease-out">
-                        <h1 class="text-4xl md:text-6xl font-black text-white uppercase tracking-widest leading-tight">The Bedrock of the <br><span class="text-arc-purple">Core Worlds' Economy</span></h1>
+                        <h1 class="text-4xl md:text-6xl font-black text-white uppercase tracking-widest leading-tight">The Bedrock of the <br><span class="text-gold-gradient">Core Worlds' Economy</span></h1>
                         <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">For over a millennium, the Auric Reserve Consortium has been the guarantor of stability, the custodian of wealth, and the engine of galactic progress.</p>
-                        <button onclick="showPage('services')" class="mt-8 px-8 py-3 bg-arc-purple text-white font-bold uppercase rounded-md hover:bg-violet-500 transition-all duration-300 transform hover:scale-105">Explore Our Services</button>
+                        <button onclick="showPage('services')" class="mt-8 px-8 py-3 bg-arc-purple text-white font-bold uppercase rounded-md hover:bg-violet-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/30">Explore Our Services</button>
                     </div>
                 </div>
-                <div class="mt-16 animate-on-scroll"><h2 class="text-3xl font-bold text-center text-white mb-8">ARC by the Numbers (FY 17,000 BBY)</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center"><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-purple" data-counter-target="1200" data-counter-suffix="+">0+</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Years of Operation</p></div><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-purple" data-counter-target="113" data-counter-suffix="T+">0T+</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Credits Under Management</p></div><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-purple" data-counter-target="127">0</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Planetary Gov'ts Served</p></div><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-purple" data-counter-target="0">0</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Successful Vault Breaches</p></div></div></div>
-                <div class="mt-16 grid lg:grid-cols-3 gap-8"><div class="lg:col-span-1 glass-card p-6 rounded-lg animate-on-scroll" style="transition-delay: 0.2s;"><h3 class="text-2xl font-bold text-white mb-4">Latest HoloNet Briefings</h3><div class="space-y-4"><div class="border-b border-arc-light pb-3"><p class="text-sm text-gray-400">CYCLE 224 | AARGAU</p><p class="font-semibold text-gray-200 hover:text-arc-purple cursor-pointer">ARC Finances Kuat Drive Yards' New 'Invincible-class' Dreadnought Platform.</p></div><div class="border-b border-arc-light pb-3"><p class="text-sm text-gray-400">CYCLE 223 | CORUSCANT</p><p class="font-semibold text-gray-200 hover:text-arc-purple cursor-pointer">Chairman Rockwell addresses Republic Senate subcommittee on Frontier Expansion financing.</p></div><div><p class="text-sm text-gray-400">CYCLE 220 | EXPANSION REGION</p><p class="font-semibold text-gray-200 hover:text-arc-purple cursor-pointer">Consortium posts record low default rates in Expansion Region ventures due to enhanced risk analysis.</p></div></div></div><div class="lg:col-span-2 bg-arc-metal rounded-lg p-8 flex flex-col md:flex-row items-center gap-8 animate-on-scroll" style="transition-delay: 0.4s;"><img src="images/dddd.jpg" alt="Chairman Johan Dex Rockwell" class="rounded-full flex-shrink-0 h-40 w-40 md:h-48 md:w-48 object-cover border-4 border-arc-purple"><div class="text-center md:text-left"><h3 class="text-2xl font-bold text-white">A Message from the Chairman</h3><p class="mt-4 text-gray-300">"In an era of uncertainty, the ARC is a constant... Our word is our bond, and our vaults are our promise. That is the legacy I uphold."</p><p class="mt-4 font-semibold text-arc-purple">Johan Dex Rockwell</p><p class="text-sm text-gray-400">47th Chairman, Auric Reserve Consortium</p></div></div></div>
+                <div class="mt-16 animate-on-scroll"><h2 class="text-3xl font-bold text-center text-white mb-8">ARC by the Numbers (FY 17,000 BBY)</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center"><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-purple">1,200+</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Years of Operation</p></div><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-purple">113T+</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Credits Under Management</p></div><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-purple">127</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Planetary Gov'ts Served</p></div><div class="glass-card p-6 rounded-lg"><p class="text-4xl lg:text-5xl font-orbitron font-bold text-arc-gold">0</p><p class="mt-2 text-sm uppercase tracking-wider text-gray-400">Successful Vault Breaches</p></div></div></div>
+                <div class="mt-16 grid lg:grid-cols-3 gap-8"><div class="lg:col-span-1 glass-card p-6 rounded-lg animate-on-scroll" style="transition-delay: 0.2s;"><h3 class="text-2xl font-bold text-white mb-4">Latest HoloNet Briefings</h3><div class="space-y-4"><div class="border-b border-arc-light pb-3"><p class="text-sm text-gray-400">CYCLE 224 | AARGAU</p><p class="font-semibold text-gray-200 hover:text-arc-purple cursor-pointer">ARC Finances Kuat Drive Yards' New 'Invincible-class' Dreadnought Platform.</p></div><div class="border-b border-arc-light pb-3"><p class="text-sm text-gray-400">CYCLE 223 | CORUSCANT</p><p class="font-semibold text-gray-200 hover:text-arc-purple cursor-pointer">Chairman Rockwell addresses Republic Senate subcommittee on Frontier Expansion financing.</p></div><div><p class="text-sm text-gray-400">CYCLE 220 | EXPANSION REGION</p><p class="font-semibold text-gray-200 hover:text-arc-purple cursor-pointer">Consortium posts record low default rates in Expansion Region ventures due to enhanced risk analysis.</p></div></div></div><div class="lg:col-span-2 bg-arc-metal rounded-lg p-8 flex flex-col md:flex-row items-center gap-8 animate-on-scroll" style="transition-delay: 0.4s;"><img src="images/dddd.jpg" alt="Chairman Johan Dex Rockwell" class="rounded-full flex-shrink-0 h-40 w-40 md:h-48 md:w-48 object-cover border-4 border-arc-purple"><div class="text-center md:text-left"><h3 class="text-2xl font-bold text-white">A Message from the Chairman</h3><p class="mt-4 text-gray-300">"In an era of uncertainty, the ARC is a constant... Our word is our bond, and our vaults are our promise. That is the legacy I uphold."</p><p class="mt-4 font-semibold text-arc-gold">Johan Dex Rockwell</p><p class="text-sm text-gray-400">47th Chairman, Auric Reserve Consortium</p></div></div></div>
             `,
             about: `
                 <div class="animate-on-scroll">
@@ -308,7 +359,7 @@
                     <p class="text-lg text-gray-300 mb-8">Forged circa 18,200 BBY, the ARC is more than a financial institution—it is a chronicle of galactic history, a testament to enduring stability in an ever-changing cosmos.</p>
                 </div>
                 <div class="mt-12 bg-arc-metal p-8 rounded-lg animate-on-scroll"><h2 class="text-3xl font-bold text-center text-white mb-8">Interactive Historical Timeline</h2><div class="relative"><div id="timeline-container" class="space-y-8"></div></div></div>
-                <div class="mt-16 animate-on-scroll"><h2 class="text-3xl font-bold text-center text-white mb-8">Leadership & Governance</h2><div class="grid md:grid-cols-2 gap-8"><div class="glass-card p-8 rounded-lg text-center"><img src="images/dddd.jpg" alt="Chairman Johan Dex Rockwell" class="rounded-full h-32 w-32 object-cover border-4 border-arc-purple mx-auto"><h3 class="text-2xl font-bold text-white mt-4">Johan Dex Rockwell</h3><p class="font-semibold text-arc-purple">47th Chairman</p><p class="mt-2 text-gray-400 text-sm">Appointed 17,003 BBY. A visionary leader focused on technological superiority and aggressive expansion into frontier markets while upholding the Consortium's ancient mandate of stability.</p></div><div class="glass-card p-8 rounded-lg"><h3 class="text-2xl font-bold text-white mb-4">The Consortium Charter</h3><p class="text-gray-300">The ARC operates under a private charter granted by the founding members of the Old Republic. This charter guarantees its political neutrality and operational autonomy, allowing it to serve all legitimate governments and corporations without prejudice. The Rockwell family controls 42%; remainder is held by founding families and institutional investors.</p></div></div></div>
+                <div class="mt-16 animate-on-scroll"><h2 class="text-3xl font-bold text-center text-white mb-8">Leadership & Governance</h2><div class="grid md:grid-cols-2 gap-8"><div class="glass-card p-8 rounded-lg text-center"><img src="images/dddd.jpg" alt="Chairman Johan Dex Rockwell" class="rounded-full h-32 w-32 object-cover border-4 border-arc-purple mx-auto"><h3 class="text-2xl font-bold text-white mt-4">Johan Dex Rockwell</h3><p class="font-semibold text-arc-gold">47th Chairman</p><p class="mt-2 text-gray-400 text-sm">Appointed 17,003 BBY. A visionary leader focused on technological superiority and aggressive expansion into frontier markets while upholding the Consortium's ancient mandate of stability.</p></div><div class="glass-card p-8 rounded-lg"><h3 class="text-2xl font-bold text-white mb-4">The Consortium Charter</h3><p class="text-gray-300">The ARC operates under a private charter granted by the founding members of the Old Republic. This charter guarantees its political neutrality and operational autonomy, allowing it to serve all legitimate governments and corporations without prejudice. The Rockwell family controls 42%; remainder is held by founding families and institutional investors.</p></div></div></div>
             `,
             services: `
                  <div class="animate-on-scroll">
@@ -321,9 +372,9 @@
                         <button class="service-tab p-4 text-sm md:text-base uppercase" data-tab="custody">Secure Custody</button>
                         <button class="service-tab p-4 text-sm md:text-base uppercase" data-tab="wealth">Private Wealth</button>
                     </div>
-                    <div id="institutional" class="service-content active-content md:grid-cols-2 gap-8 items-center glass-card p-8 rounded-lg"><div><h2 class="text-2xl font-bold text-white mb-3">Institutional & Governmental Services</h2><p class="text-gray-300 mb-4">We provide the financial architecture for civilizations...</p><ul class="space-y-2 text-gray-300"><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Planetary Treasury Management</strong></span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Large-Scale Project Financing</strong></span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Interstellar Letters of Credit</strong></span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Currency Exchange & Backing</strong></span></li></ul></div><div class="hidden md:block"><img src="images/star-wars-book-of-boba-fett-2022-using-commodity-money-3.png" class="rounded-lg shadow-lg"></div></div>
-                    <div id="custody" class="service-content md:grid-cols-2 gap-8 items-center glass-card p-8 rounded-lg"><div class="hidden md:block"><img src="images/554830305_24433306486310728_1080202522830542100_n.jpg" class="rounded-lg shadow-lg"></div><div><h2 class="text-2xl font-bold text-white mb-3">Secure Custody Solutions</h2><p class="text-gray-300 mb-4">Our reputation is built upon the security of our vaults...</p><ul class="space-y-2 text-gray-300"><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Precious Metals & Bullion</strong></span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Priceless Artifacts</strong></span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Sensitive Data & State Secrets</strong></span></li></ul></div></div>
-                    <div id="wealth" class="service-content md:grid-cols-2 gap-8 items-center glass-card p-8 rounded-lg"><div><h2 class="text-2xl font-bold text-white mb-3">Private Wealth & Estate Management</h2><p class="text-gray-300 mb-4">Discreet, white-glove service for the Core Worlds' elite...</p><ul class="space-y-2 text-gray-300"><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Personalized Portfolio Management</strong></span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Estate & Inheritance Services</strong></span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Anonymous Holdings</strong></span></li></ul></div><div class="hidden md:block"><img src="images/CreditChip.webp" class="rounded-lg shadow-lg"></div></div>
+                    <div class="service-content active-content" id="institutional"><div class="grid md:grid-cols-2 gap-8 items-center glass-card p-8 rounded-lg"><div><h2 class="text-2xl font-bold text-white mb-3">Institutional & Governmental Services</h2><p class="text-gray-300 mb-4">We provide the financial architecture for civilizations...</p><ul class="space-y-2 text-gray-300"><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Planetary Treasury Management</strong>: Overseeing reserve assets for 127 member worlds.</span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Large-Scale Project Financing</strong>: Funding infrastructure, from shipyards to planetary defense grids.</span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Interstellar Letters of Credit</strong>: Underwriting 28% of all major interstellar trade contracts.</span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Currency Exchange & Backing</strong>: Ensuring liquidity and stability for local and regional currencies.</span></li></ul></div><div class="hidden md:block"><img src="images/star-wars-book-of-boba-fett-2022-using-commodity-money-3.png" class="rounded-lg shadow-lg"></div></div></div>
+                    <div class="service-content" id="custody"><div class="grid md:grid-cols-2 gap-8 items-center glass-card p-8 rounded-lg"><div class="hidden md:block"><img src="images/554830305_24433306486310728_1080202522830542100_n.jpg" class="rounded-lg shadow-lg"></div><div><h2 class="text-2xl font-bold text-white mb-3">Secure Custody Solutions</h2><p class="text-gray-300 mb-4">Our reputation is built upon the security of our vaults, holding 41% of the Core Worlds' ultra-secure assets...</p><ul class="space-y-2 text-gray-300"><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Precious Metals & Bullion</strong>: 13 million metric tons under client custody.</span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Priceless Artifacts</strong>: Over 230,000 culturally significant items secured.</span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Sensitive Data & State Secrets</strong>: Air-gapped physical and digital archives.</span></li></ul></div></div></div>
+                    <div class="service-content" id="wealth"><div class="grid md:grid-cols-2 gap-8 items-center glass-card p-8 rounded-lg"><div><h2 class="text-2xl font-bold text-white mb-3">Private Wealth & Estate Management</h2><p class="text-gray-300 mb-4">Discreet, white-glove service for the Core Worlds' elite...</p><ul class="space-y-2 text-gray-300"><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Personalized Portfolio Management</strong> for UHNW individuals.</span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Estate & Inheritance Services</strong> for noble houses and dynasties.</span></li><li class="flex items-start"><span class="text-arc-purple mr-3 font-bold">›</span><span><strong class="text-white">Anonymous Holdings</strong> through legally compliant opaque structures.</span></li></ul></div><div class="hidden md:block"><img src="images/CreditChip.webp" class="rounded-lg shadow-lg"></div></div></div>
                 </div>
                 <div class="mt-16 bg-arc-metal p-8 rounded-lg text-center animate-on-scroll"><h2 class="text-3xl font-bold text-white">Client Onboarding Protocol</h2><p class="mt-4 max-w-2xl mx-auto text-gray-300">Entry into the Auric Reserve Consortium's client base is a meticulous process, reserved for entities of significant standing.</p><button onclick="showPage('contact')" class="mt-6 px-8 py-3 border-2 border-arc-purple text-arc-purple font-bold uppercase rounded-md hover:bg-arc-purple hover:text-white transition-all duration-300 transform hover:scale-105">Initiate Secure Contact</button></div>
             `,
@@ -333,20 +384,20 @@
                     <p class="text-lg text-gray-300 mb-8">Our presence spans the Core Worlds and key Expansion Region territories, ensuring seamless service and robust security across our entire network.</p>
                 </div>
                  <div class="mt-8 glass-card p-8 rounded-lg animate-on-scroll">
-                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Human Resources: Our Most Valuable Asset</h2>
-                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="8500" data-counter-separator=",">0</p><p class="mt-2 text-gray-400">Total Employees</p></div>
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="4200" data-counter-separator=",">0</p><p class="mt-2 text-gray-400">Banking & Finance Staff</p></div>
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="3400" data-counter-separator=",">0</p><p class="mt-2 text-gray-400">Security Personnel</p></div>
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="885" data-counter-separator=",">0</p><p class="mt-2 text-gray-400">Support & Operations</p></div>
+                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Infrastructural Footprint</h2>
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                        <div><p class="text-4xl font-orbitron text-arc-purple">23</p><p class="mt-2 text-gray-400">Major Facilities</p></div>
+                        <div><p class="text-4xl font-orbitron text-arc-purple">8</p><p class="mt-2 text-gray-400">Core World Regional Centers</p></div>
+                        <div><p class="text-4xl font-orbitron text-arc-purple">15</p><p class="mt-2 text-gray-400">Expansion Region Outposts</p></div>
                      </div>
                 </div>
                  <div class="mt-8 glass-card p-8 rounded-lg animate-on-scroll">
-                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Technology & Communications</h2>
-                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                         <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="8">0</p><p class="mt-2 text-gray-400">Secure Holonet Nodes</p></div>
-                         <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="45000" data-counter-separator=",">0</p><p class="mt-2 text-gray-400">Daily Transactions</p></div>
-                         <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="340">0</p><p class="mt-2 text-gray-400">Dedicated Couriers</p></div>
+                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Human Resources: Our Most Valuable Asset</h2>
+                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                        <div><p class="text-4xl font-orbitron text-arc-purple">8,500</p><p class="mt-2 text-gray-400">Total Employees</p></div>
+                        <div><p class="text-4xl font-orbitron text-arc-purple">4,200</p><p class="mt-2 text-gray-400">Banking & Finance Staff</p></div>
+                        <div><p class="text-4xl font-orbitron text-arc-purple">3,400</p><p class="mt-2 text-gray-400">Security Personnel</p></div>
+                        <div><p class="text-4xl font-orbitron text-arc-purple">885</p><p class="mt-2 text-gray-400">Support & Operations</p></div>
                      </div>
                 </div>
             `,
@@ -371,25 +422,7 @@
                         <div class="relative h-64"><canvas id="clientAccountTypeChart"></canvas></div>
                     </div>
                 </div>
-                <div class="mt-8 glass-card p-8 rounded-lg animate-on-scroll">
-                     <h2 class="text-2xl font-bold text-white mb-6">Private & Commercial Accounts</h2>
-                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                        <div>
-                            <p class="text-4xl font-orbitron text-arc-purple" data-counter-target="89">0</p>
-                            <p class="mt-2 text-gray-400">Ultra High Net Worth Individuals</p>
-                            <p class="text-sm text-gray-500">(>1B Credits)</p>
-                        </div>
-                         <div>
-                            <p class="text-4xl font-orbitron text-arc-purple" data-counter-target="4980" data-counter-separator=",">0</p>
-                            <p class="mt-2 text-gray-400">High Net Worth & Affluent Merchants</p>
-                             <p class="text-sm text-gray-500">(10M-1B Credits)</p>
-                        </div>
-                        <div>
-                            <p class="text-4xl font-orbitron text-arc-purple" data-counter-target="52000" data-counter-separator=",">0</p>
-                            <p class="mt-2 text-gray-400">Commercial & Private Investment Accounts</p>
-                        </div>
-                     </div>
-                </div>
+                <div class="mt-16 animate-on-scroll"><h2 class="text-3xl font-bold text-center text-white mb-8">Client Testimonials</h2><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="glass-card p-6 rounded-lg"><blockquote class="text-gray-300 italic">"When Kuat faced a credit shortage during the Alsakan Conflicts, the ARC's stability was the only thing that kept our shipyards operational. They are indispensable."</blockquote><cite class="mt-4 block text-right font-semibold text-arc-purple not-italic">— Kuat of Kuat, CEO, Kuat Drive Yards</cite></div><div class="glass-card p-6 rounded-lg"><blockquote class="text-gray-300 italic">"The Consortium's discretion is legendary. For generations, my family's assets have been managed with an efficiency and secrecy that is simply unmatched."</blockquote><cite class="mt-4 block text-right font-semibold text-arc-purple not-italic">— A Member of the House of Organa</cite></div><div class="glass-card p-6 rounded-lg md:col-span-2 lg:col-span-1"><blockquote class="text-gray-300 italic">"Their financing of our Outer Rim expansion was bold, decisive, and ultimately, profitable. They understand calculated risk better than anyone."</blockquote><cite class="mt-4 block text-right font-semibold text-arc-purple not-italic">— Czerka Corporation Executive</cite></div></div></div>
             `,
             security: `
                 <div class="animate-on-scroll">
@@ -398,19 +431,29 @@
                 </div>
                 <div class="mt-12 bg-arc-metal p-8 rounded-lg animate-on-scroll">
                     <h2 class="text-3xl font-bold text-center text-white mb-4">Anatomy of a Citadel Vault</h2>
-                    <p class="text-center text-gray-400 mb-8">Hover over each layer to reveal details. Mobile users can tap each layer.</p>
+                    <p class="text-center text-gray-400 mb-8">Select a security layer to view its specifications.</p>
                     <div class="max-w-4xl mx-auto p-4"><div id="vault-diagram" class="relative flex flex-col items-center justify-center space-y-2"></div></div>
                     <div id="vault-info" class="mt-8 text-center min-h-[6rem] p-4 bg-gray-900/50 rounded-lg transition-all duration-300"><p class="text-gray-300">Select a security layer to view its specifications.</p></div>
                 </div>
-                 <div class="mt-8 glass-card p-8 rounded-lg animate-on-scroll">
-                     <h2 class="text-2xl font-bold text-white mb-6 text-center">Annual Security Incidents</h2>
-                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="15">0</p><p class="mt-2 text-gray-400">Piracy Attempts on Transports</p></div>
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="2">0</p><p class="mt-2 text-gray-400">Successful Transport Hijackings</p></div>
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="4">0</p><p class="mt-2 text-gray-400">Vault Breach Attempts Repelled</p></div>
-                        <div><p class="text-4xl font-orbitron text-arc-purple" data-counter-target="18">0</p><p class="mt-2 text-gray-400">Internal Fraud Cases Detected</p></div>
-                     </div>
-                      <p class="mt-8 text-center text-2xl font-orbitron text-white">Major Vault Breaches (Historical): <span class="text-arc-purple">0</span></p>
+                <div class="mt-8 grid md:grid-cols-2 gap-8">
+                     <div class="glass-card p-8 rounded-lg animate-on-scroll">
+                         <h2 class="text-2xl font-bold text-white mb-6 text-center">Annual Security Incidents</h2>
+                         <div class="grid grid-cols-2 gap-8 text-center">
+                            <div><p class="text-4xl font-orbitron text-arc-purple">15</p><p class="mt-2 text-gray-400">Piracy Attempts</p></div>
+                            <div><p class="text-4xl font-orbitron text-arc-purple">2</p><p class="mt-2 text-gray-400">Successful Hijackings</p></div>
+                            <div><p class="text-4xl font-orbitron text-arc-purple">4</p><p class="mt-2 text-gray-400">Vault Attempts Repelled</p></div>
+                            <div><p class="text-4xl font-orbitron text-arc-purple">18</p><p class="mt-2 text-gray-400">Internal Fraud Cases</p></div>
+                         </div>
+                          <p class="mt-8 text-center text-2xl font-orbitron text-white">Major Vault Breaches: <span class="text-arc-gold">0</span></p>
+                    </div>
+                    <div class="glass-card p-8 rounded-lg animate-on-scroll">
+                        <h2 class="text-2xl font-bold text-white mb-4">Risk Management</h2>
+                        <ul class="space-y-2 text-gray-300">
+                            <li class="flex items-start"><span class="text-arc-gold mr-3 mt-1">■</span><div><strong class="text-white">Bad Debt Reserves:</strong> Maintained at 890 billion credits to cover potential defaults.</div></li>
+                            <li class="flex items-start"><span class="text-arc-gold mr-3 mt-1">■</span><div><strong class="text-white">Proactive Recovery:</strong> 180 billion credits recovered from defaulted loans in the last fiscal year.</div></li>
+                             <li class="flex items-start"><span class="text-arc-gold mr-3 mt-1">■</span><div><strong class="text-white">Variable Default Rates:</strong> Rigorous analysis shows a 1.8% default rate in the Core, versus 8.7% in high-risk Frontier ventures.</div></li>
+                        </ul>
+                    </div>
                 </div>
             `,
             investors: `
@@ -421,7 +464,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
                     <div class="lg:col-span-5 glass-card p-6 rounded-lg animate-on-scroll"><h2 class="text-2xl text-white font-bold mb-4">Annual Financial Summary (FY 17,000 BBY)</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"><div><p class="text-sm uppercase text-gray-400">Total Assets</p><p class="text-2xl font-orbitron text-arc-purple">113T cr.</p></div><div><p class="text-sm uppercase text-gray-400">Annual Revenue</p><p class="text-2xl font-orbitron text-arc-purple">7.8T cr.</p></div><div><p class="text-sm uppercase text-gray-400">Operating Profit</p><p class="text-2xl font-orbitron text-arc-purple">3.9T cr.</p></div><div><p class="text-sm uppercase text-gray-400">Net Profit Margin</p><p class="text-2xl font-orbitron text-arc-purple">50.3%</p></div></div></div>
                     <div class="lg:col-span-3 glass-card p-6 rounded-lg animate-on-scroll"><h3 class="text-xl text-white font-bold mb-4 text-center">Revenue Sources</h3><div class="relative h-80 md:h-96"><canvas id="revenueSourcesChart"></canvas></div></div>
-                    <div class="lg:col-span-2 glass-card p-6 rounded-lg animate-on-scroll"><h3 class="text-xl text-white font-bold mb-4 text-center">Annual Expenses</h3><div class="relative h-80 md:h-96"><canvas id="expensesChart"></canvas></div></div>
+                    <div class="lg:col-span-2 glass-card p-6 rounded-lg animate-on-scroll"><h3 class="text-xl text-white font-bold mb-4 text-center">Market Position</h3><div class="relative h-80 md:h-96"><canvas id="marketPositionChart"></canvas></div></div>
                     <div class="lg:col-span-5 glass-card p-6 rounded-lg animate-on-scroll"><h2 class="text-2xl text-white font-bold mb-4">Loan Portfolio Analysis (18.7T cr. Total)</h2><div class="relative h-64 md:h-80"><canvas id="loanPortfolioChart"></canvas></div></div>
                 </div>
             `,
@@ -511,7 +554,7 @@
 
             // Conditional chart initialization
             if (['investors', 'clients'].includes(pageId)) {
-                setTimeout(() => initializeCharts(pageId), 50);
+                setTimeout(() => initializeCharts(pageId), 100);
             }
         }
 
@@ -536,7 +579,18 @@
         function populateVaultDiagram() {
             const diagramContainer = document.getElementById('vault-diagram');
             const infoContainer = document.getElementById('vault-info');
-            diagramContainer.innerHTML = vaultLayers.map((layer, i) => `<div class="vault-layer w-full max-w-sm p-3 text-center rounded-lg" style="width: ${100 - i * 15}%;" onmouseenter="updateVaultInfo(${i})" ontouchstart="updateVaultInfo(${i})"><p class="font-semibold text-sm">${layer.name}</p></div>`).join('');
+            diagramContainer.innerHTML = vaultLayers.map((layer, i) => `<div class="vault-layer w-full max-w-sm p-3 text-center rounded-lg" style="width: ${100 - i * 15}%;" data-layer-index="${i}"><p class="font-semibold text-sm">${layer.name}</p></div>`).join('');
+            
+            diagramContainer.addEventListener('click', (e) => {
+                const layerEl = e.target.closest('.vault-layer');
+                if (layerEl) {
+                    const index = layerEl.dataset.layerIndex;
+                    updateVaultInfo(index);
+                    document.querySelectorAll('.vault-layer').forEach(el => el.classList.remove('active-layer'));
+                    layerEl.classList.add('active-layer');
+                }
+            });
+
             window.updateVaultInfo = (index) => { infoContainer.innerHTML = `<p class="text-arc-purple font-bold">${vaultLayers[index].name}</p><p class="text-gray-300 mt-2">${vaultLayers[index].details}</p>`; };
         }
         
@@ -549,7 +603,7 @@
             const chartConfigs = {
                 investors: {
                     revenueSourcesChart: { type: 'doughnut', data: { labels: ['Loan Interest', 'Service Fees', 'Vault Storage', 'Metal Trading', 'Currency Exchange', 'Other'], datasets: [{ data: [36, 24, 11, 10, 9, 10], backgroundColor: purpleHues, borderColor: '#111827' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#d1d5db', boxWidth: 12 } } } } },
-                    expensesChart: { type: 'pie', data: { labels: ['Personnel', 'Security', 'Facility Ops', 'Bad Debt', 'Tech', 'Other'], datasets: [{ data: [31, 23, 14, 11, 9, 12], backgroundColor: purpleHues, borderColor: '#111827' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#d1d5db', boxWidth: 12 } } } } },
+                    marketPositionChart: { type: 'bar', data: { labels: ['Ultra-Secure Vaulting', 'Precious Metal Custody', 'Letters of Credit'], datasets: [{ label: 'Market Share %', data: [41, 34, 28], backgroundColor: ['#8b5cf6', '#7c3aed', '#6d28d9'] }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: '#d1d5db' } }, y: { ticks: { color: '#d1d5db' } } }, plugins: { legend: { display: false } } } },
                     loanPortfolioChart: { type: 'bar', data: { labels: ['Govt. Infrastructure', 'Corporate Industrial', 'Shipbuilding/Defense', 'Exploration', 'Real Estate'], datasets: [{ label: 'Trillion Credits', data: [6.2, 4.8, 3.1, 2.4, 1.4], backgroundColor: purpleHues.slice(0,5) }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: '#d1d5db' } }, y: { ticks: { color: '#d1d5db' }, grid: { color: 'rgba(55, 65, 81, 0.5)' } } }, plugins: { legend: { display: false } } } }
                 },
                 clients: {
@@ -594,40 +648,16 @@
 
         function setupScrollAnimations() {
             const animatedElements = document.querySelectorAll('.animate-on-scroll');
-            const counterElements = document.querySelectorAll('[data-counter-target]');
-
+            
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
-                        if (entry.target.hasAttribute('data-counter-target')) {
-                            animateCounter(entry.target);
-                            observer.unobserve(entry.target); // Animate counter only once
-                        }
                     }
                 });
             }, { threshold: 0.1 });
 
             animatedElements.forEach(el => observer.observe(el));
-
-            function animateCounter(el) {
-                const target = +el.dataset.counterTarget;
-                const duration = 1500;
-                const suffix = el.dataset.counterSuffix || '';
-                const separator = el.dataset.counterSeparator || '';
-                let startTimestamp = null;
-                const step = (timestamp) => {
-                    if (!startTimestamp) startTimestamp = timestamp;
-                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                    let currentValue = Math.floor(progress * target);
-                    let displayValue = separator ? currentValue.toLocaleString() : currentValue;
-                    el.innerText = displayValue + suffix;
-                    if (progress < 1) {
-                        window.requestAnimationFrame(step);
-                    }
-                };
-                window.requestAnimationFrame(step);
-            }
         }
         
         function setupServiceTabs() {
